@@ -1,4 +1,5 @@
 const { Comic, validate } = require("../models/comics");
+const { Story, validateStory } = require("../models/stories");
 const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
@@ -69,6 +70,37 @@ router.get("/:id", auth, async (req, res) => {
       } 
 
  
+});
+router.get("/story/:id", auth, async (req, res) => {
+
+    try {
+        const stories = await Story.find({"comics._id":req.params.id});
+        res.send(stories);
+      } catch(error) {
+        return res
+        .status(404)
+        .send("The stories with the given ID was not found.");
+        //log error
+        console.error(error);
+      } 
+
+ 
+});
+
+router.get("/story/characters/:id", auth, async (req, res) => {
+
+  try {
+      const stories = await Story.find({"comics._id":req.params.id}).populate("characters").select("characters");
+      res.send(stories);
+    } catch(error) {
+      return res
+      .status(404)
+      .send("The stories with the given ID was not found.");
+      //log error
+      console.error(error);
+    } 
+
+
 });
 
 module.exports = router;
