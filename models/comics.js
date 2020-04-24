@@ -47,6 +47,12 @@ const creatorSchema = new mongoose.Schema({
         type: Boolean,
         default: true
       },
+      stories: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Story"
+        }    
+    ]
   });
 
 
