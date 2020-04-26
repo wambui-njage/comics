@@ -6,7 +6,8 @@ const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
   const comics = await Comic.find({"isAvailable":true});
-  res.send(comics);
+  res.status(200).json({success: true, comics});
+
 });
 
 // router.post("/", auth, async (req, res) => {
@@ -60,26 +61,26 @@ router.get("/:id", auth, async (req, res) => {
 
     try {
         const comic = await Comic.findById(req.params.id);
-        res.send(comic);
+        res.status(200).json({success: true, comic});
       } catch(error) {
         return res
         .status(404)
-        .send("The comic with the given ID was not found.");
+        .json({success: false,error:'NOT FOUND'});
         //log error
         console.error(error);
       } 
 
  
 });
-router.get("/story/:id", auth, async (req, res) => {
+router.get("/stories/:id", auth, async (req, res) => {
 
     try {
         const stories = await Story.find({"comics._id":req.params.id});
-        res.send(stories);
+        res.status(200).json({success: true, stories});
       } catch(error) {
         return res
         .status(404)
-        .send("The stories with the given ID was not found.");
+        .json({success: false,error:'NOT FOUND'});
         //log error
         console.error(error);
       } 
@@ -87,15 +88,20 @@ router.get("/story/:id", auth, async (req, res) => {
  
 });
 
-router.get("/story/characters/:id", auth, async (req, res) => {
+router.get("/characters/:id", auth, async (req, res) => {
+
+  const characters = await Story.find({"comics._id":req.params.id}).populate("characters");
+  return characters
 
   try {
-      const stories = await Story.find({"comics._id":req.params.id}).populate("characters").select("characters");
-      res.send(stories);
+      // const characters = await Story.find({"comics._id":req.params.id}).populate("characters").select("characters");
+      const characters = await Story.find({"comics._id":req.params.id}).populate("characters");
+      // const characters = await Story.find({"comics._id":req.params.id});
+      res.status(200).json({success: true, characters});
     } catch(error) {
       return res
       .status(404)
-      .send("The stories with the given ID was not found.");
+      .json({success: false,error:'NOT FOUND'});
       //log error
       console.error(error);
     } 

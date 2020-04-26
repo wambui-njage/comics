@@ -4,7 +4,7 @@
   "description": "comics",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha 'tests/comicstest.js' --timeout 10000",
     "start": "node index.js"
   },
   "author": "wambui njage",
@@ -18,10 +18,16 @@
     "joi": "^13.7.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
+    "mocha": "^7.1.2",
     "mongoose": "^5.2.17",
     "node": "^10.10.0",
     "nodemon": "^1.18.4",
     "pug": "^2.0.3",
     "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "jest": "^25.4.0",
+    "supertest": "^4.0.2"
   }
 }

@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
   const creators = await Creator.find();
-  res.send(creators);
+  res.status(200).json({success: true, creators});
 });
 
 router.post("/", auth, async (req, res) => {
@@ -59,17 +59,16 @@ router.get("/:id", auth, async (req, res) => {
 
     try {
         const creator = await Creator.findById(req.params.id).select("-__v");
-        res.send(creator);
+        res.status(200).json({success: true, creator});
       } catch(error) {
         return res
       .status(404)
-      .send("The creator with the given ID was not found.");
+      .json({success: false, error:"NOT FOUND"});
       //log error
-        console.error(error);
+       // console.error(error);
       } 
     
 
-  res.send(creator);
 });
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const config = require("config");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
+const {Character} = require("./characters");
 const mongoose = require("mongoose");
 const storySchema = new mongoose.Schema({
     comic: { 
@@ -43,12 +44,12 @@ const storySchema = new mongoose.Schema({
                 minlength: 2,
                 maxlength: 50
               },
-              characters: [
+              characters: 
                 {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: "Character"
+                    ref:"Character"
                 }    
-            ],
+            ,
 
    
   });
