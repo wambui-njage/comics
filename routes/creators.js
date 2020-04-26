@@ -1,7 +1,8 @@
-const { Creator, validate } = require("../models/creators");
+const { Creator } = require("../models/creators");
 const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
+const Joi = require('joi');
 
 router.get("/", auth, async (req, res) => {
   const creators = await Creator.find();
@@ -24,7 +25,7 @@ router.post("/", auth, async (req, res) => {
 
 router.put("/:id", auth, async (req, res) => {
   const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({success:false,error:error.details[0].message});
 
   const creator = await Creator.findByIdAndUpdate(
     req.params.id,
@@ -56,6 +57,8 @@ router.delete("/:id", auth, async (req, res) => {
 });
 
 router.get("/:id", auth, async (req, res) => {
+  const { error } = validate(req.params); 
+  if (error) return res.status(400).send({success:false,error:error.details[0].message});
 
     try {
         const creator = await Creator.findById(req.params.id).select("-__v");
@@ -70,5 +73,13 @@ router.get("/:id", auth, async (req, res) => {
     
 
 });
+
+function validate(req) {
+  const schema = {
+    id: Joi.string().min(8).max(255).required()
+  };
+
+  return Joi.validate(req, schema);
+}
 
 module.exports = router;

@@ -9,18 +9,16 @@ const router = express.Router();
 router.post('/', async (req, res) => {
 
   const { error } = validate(req.body); 
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).json({success:false,error:error.details[0].message});
 
   let creator = await Creator.findOne({ email: req.body.email });
-  if (!creator) return res.status(400).send('Invalid email or password.');
-
-  console.log(creator)
+  if (!creator) return res.status(400).json({success:false,error:'Invalid email or password.'});
 
   const validPassword = await bcrypt.compare(req.body.password, creator.password);
-  if (!validPassword) return res.status(400).send('Invalid email or password.');
+  if (!validPassword) return res.status(400).json({success:false,error:'Invalid email or password.'});
 
   const token = creator.generateAuthToken();
-  res.send(token);
+  return res.status(200).json({success:true,token});
 });
 
 function validate(req) {

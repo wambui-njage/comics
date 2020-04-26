@@ -1,8 +1,9 @@
-const { Comic, validate } = require("../models/comics");
-const { Story, validateStory } = require("../models/stories");
+const { Comic } = require("../models/comics");
+const { Story } = require("../models/stories");
 const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
+const Joi = require('joi');
 
 router.get("/", auth, async (req, res) => {
   const comics = await Comic.find({"isAvailable":true});
@@ -59,6 +60,9 @@ router.get("/", auth, async (req, res) => {
 
 router.get("/:id", auth, async (req, res) => {
 
+  const { error } = validate(req.params); 
+  if (error) return res.status(400).json({success:false,error:error.details[0].message});
+
     try {
         const comic = await Comic.findById(req.params.id);
         res.status(200).json({success: true, comic});
@@ -74,9 +78,19 @@ router.get("/:id", auth, async (req, res) => {
 });
 router.get("/stories/:id", auth, async (req, res) => {
 
+  const { error } = validate(req.params); 
+  if (error) return res.status(400).json({success:false,error:error.details[0].message});
     try {
         const stories = await Story.find({"comics._id":req.params.id});
-        res.status(200).json({success: true, stories});
+      
+        if(!stories.length){
+          
+          return res.status(404).json({success: false,error:'NOT FOUND'});
+         
+        }
+        
+        return  res.status(200).json({success: true, stories});
+
       } catch(error) {
         return res
         .status(404)
@@ -89,6 +103,8 @@ router.get("/stories/:id", auth, async (req, res) => {
 });
 
 router.get("/characters/:id", auth, async (req, res) => {
+  const { error } = validate(req.params); 
+  if (error) return res.status(400).json({success:false,error:error.details[0].message});
 
   const characters = await Story.find({"comics._id":req.params.id}).populate("characters");
   return characters
@@ -108,5 +124,13 @@ router.get("/characters/:id", auth, async (req, res) => {
 
 
 });
+
+function validate(req) {
+  const schema = {
+    id: Joi.string().min(8).max(255).required()
+  };
+
+  return Joi.validate(req, schema);
+}
 
 module.exports = router;
