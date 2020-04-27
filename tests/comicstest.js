@@ -124,28 +124,40 @@ describe('GET /api/comics/stories/:id', function () {
             });
     });
 });
-// describe('GET /api/comics/characters/:id', function () {
-//     it('respond with json containing characters from a comic', function (done) {
-//         request(app)
-//             .get('/api/comics/5ea32427a3afc38fafdf34cb')
-//             .set('Accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(200, done);
-//     });
+describe('GET /api/comics/characters/:id', function () {
+    it('respond with json containing characters from a comic', function (done) {
+        request(app)
+            .get('/api/comics/5ea32427a3afc38fafdf34cb')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200, done);
+    });
 
-//     it('respond with json characters not found', function (done) {
-//         request(app)
-//             .get('/api/comics/characters/12345678')
-//             .set('Accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(404) //expecting HTTP status code
-//             .expect({success: false,error:'NOT FOUND'}) // expecting content value
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             });
-//     });
-// });
+    it('respond with json characters not found', function (done) {
+        request(app)
+            .get('/api/comics/characters/12345678')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(404) //expecting HTTP status code
+            .expect({success: false,error:'NOT FOUND'}) // expecting content value
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            });
+    });
+
+    it('respond with json characters Bad Request wrong id format', function (done) {
+        request(app)
+            .get('/api/comics/characters/1234')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400) //expecting HTTP status code
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            });
+    });
+});
 
 describe('Login /api/login', function () {
     let data = {

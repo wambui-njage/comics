@@ -106,14 +106,18 @@ router.get("/characters/:id", auth, async (req, res) => {
   const { error } = validate(req.params); 
   if (error) return res.status(400).json({success:false,error:error.details[0].message});
 
-  const characters = await Story.find({"comics._id":req.params.id}).populate("characters");
-  return characters
 
   try {
-      // const characters = await Story.find({"comics._id":req.params.id}).populate("characters").select("characters");
-      const characters = await Story.find({"comics._id":req.params.id}).populate("characters");
-      // const characters = await Story.find({"comics._id":req.params.id});
-      res.status(200).json({success: true, characters});
+     
+      const characters = await Story.find({"comics._id":req.params.id}).populate("characters").select("characters");
+
+      if(!characters.length){
+          
+        return res.status(404).json({success: false,error:'NOT FOUND'});
+       
+      }
+      
+      return res.status(200).json({success: true, characters});
     } catch(error) {
       return res
       .status(404)

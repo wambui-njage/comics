@@ -44,11 +44,11 @@ const storySchema = new mongoose.Schema({
                 minlength: 2,
                 maxlength: 50
               },
-              characters: 
+              characters: [
                 {
                     type: mongoose.Schema.Types.ObjectId,
                     ref:"Character"
-                }    
+                } ]  
             ,
 
    

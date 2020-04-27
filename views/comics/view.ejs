@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+    <head>
+        <%- include  ('../layouts/header') ; -%>
+
+    </head>
+
+        <%- include  ('../layouts/topmenu') ; -%>
+        <%- include  ('../layouts/sidemenu') ; -%>
+    <%- include  ('../layouts/boxed-body'); -%>
+
+    <!-- BEGIN: Content-->
+        <div class="app-content content" id="dash">
+            <%- include  ('../layouts/loading'); -%>
+          <div class="content-wrapper">
+              <div class="content-wrapper-before"></div>
+              <div class="content-header row">
+                <div class="content-header-left col-md-4 col-12 mb-2">
+                  <h3 class="content-header-title">Comic</h3>
+                </div>
+               
+              </div>
+            <div class="content-body" v-cloak>
+
+  
+        <div class="col-xl-12 col-lg-12 col-md-12" >
+                <div class="card bg-gradient-x-blue-green">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="col-sm-12 col-xl-8">
+                                    <div class="media d-flex m-1 ">
+                                      <div class="align-left p-1">
+                                        <a href="#" class="profile-image">
+                                          <img :src="comic.comicurl" class="rounded-circle img-border height-200 width-200" alt="Card image">
+                                        </a>
+                                      </div>
+                                      <div class="media-body text-left  mt-1">
+                                        <h3 class="font-large-1 white">{{comic.comicname}}
+                                          <span class="font-medium-1 white">(comic)</span>
+                                        </h3>
+                                        <p class="white">{{comic.createdon}}
+                                             </p>
+                                        <p class="white text-bold-300 d-none d-sm-block">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed odio risus. Integer sit amet dolor elit. Suspendisse
+                                          ac neque in lacus venenatis convallis. Sed eu lacus odio</p>
+                                  
+                              
+                              
+                                      </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+        </div>
+
+       <div class="card">
+        <div class="card-header">Stories Under {{comic.comicname}}s</h4>
+        
+      </div>
+
+      <div class="card-body" v-if="stories">  
+        <div class="col-xl-4 col-lg-6 col-md-12" v-for="story in stories">
+          <div class="card bg-gradient-x-blue-green">
+                  <div class="card-content">
+                      <div class="card-body">
+                          <div class="media d-flex">
+                              <div class="align-self-top">
+                                 
+                                      
+                            
+                              </div>
+                              <div class="media-body text-white text-right align-self-bottom mt-3">
+                                  <span class="d-block mb-1 font-medium-1">{{story.title}}</span>
+                                  <span class="d-block mb-1 font-medium-1">{{story.comics.comicname}}</span>
+                                  <span class="d-block mb-1 font-medium-1">{{story.createdon}}</span>
+                                  
+                                  <span class="d-block mb-1 font-medium-1"><a :href="'/characters/' + comic._id"> View Characters</a></span>
+                                  
+                              
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+  </div>
+      </div>
+
+       </div>
+
+      
+
+
+       
+        
+
+
+
+            </div>
+          </div>
+        </div>
+        <!-- END: Content-->
+
+        <%- include  ('../layouts/footer'); -%>
+        <script>
+            new Vue({
+              
+             el: '#dash',
+             mounted() {
+                this.getData()
+                this.getStories()
+               
+     
+                 },
+                 data() {
+                     return {
+     
+                         error:"",
+                         comic:{},
+                         stories:{},
+                         id:"<%= id %>"
+                     };
+                 },
+                
+                 methods: {
+                     
+     
+                     async getData() {
+     
+                         let that = this;
+                         $("#loading" ).show();
+                         try{
+     
+                             const response = await axios.get(`/api/comics/${that.id}`);
+                           
+                             $("#loading" ).hide();
+                             console.log(response)
+                             that.results=response.data;
+     
+                             if(!response.data.success){
+     
+                               that.error=response.data.error
+                             }else{
+                               that.comic = response.data.comic
+                              
+                             }
+     
+                             
+     
+     
+                         }catch(err){
+                             $("#loading" ).hide();
+                             that.error=err
+     
+                         }
+     
+     
+                        
+                     },
+                     async getStories() {
+     
+     let that = this;
+     $("#loading" ).show();
+     try{
+
+         const response = await axios.get(`/api/comics/stories/${that.id}`);
+       
+         $("#loading" ).hide();
+         console.log(response)
+         that.results=response.data;
+
+         if(!response.data.success){
+
+           that.error=response.data.error
+         }else{
+           that.stories = response.data.stories
+          
+         }
+
+         
+
+
+     }catch(err){
+         $("#loading" ).hide();
+         that.error=err
+
+     }
+
+
+    
+ }
+
+
+                 },
+
+
+                
+     
+         });
+     
+         </script>
+
+
+
+
+

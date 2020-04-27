@@ -23,6 +23,12 @@ const creatorSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 1024
   },
+  profilepic: {
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: 1024
+  },
   createdon: { 
     type: Date
   }
